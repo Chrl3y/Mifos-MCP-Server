@@ -1,0 +1,51 @@
+name: Deploy to DigitalOcean Droplet
+
+on:
+  push:
+    branches: [local-deploy]
+  workflow_dispatch:   # allow manual trigger from GitHub Actions UI
+
+jobs:
+  deploy:
+    name: SSH → pull → rebuild
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DO_SSH_PRIVATE_KEY }}" > ~/.ssh/do_deploy
+          chmod 600 ~/.ssh/do_deploy
+          ssh-keyscan -H "${{ secrets.DO_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        env:
+          HOST: ${{ secrets.DO_HOST }}
+          USER: ${{ secrets.DO_SSH_USER }}
+        run: |
+          ssh -i ~/.ssh/do_deploy -o StrictHostKeyChecking=no "$USER@$HOST" '
+            set -e
+            cd ~/mifos-mcp-server
+
+            echo "==> Pulling latest code..."
+            git fetch origin local-deploy
+            git reset --hard origin/local-deploy
+
+            echo "==> Rebuilding containers..."
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml \
+              up -d --build --remove-orphans
+
+            echo "==> Cleanup old images..."
+            docker image prune -f
+
+            echo "==> Status:"
+            docker compose ps
+          '
+
+      - name: Health check
+        env:
+          HOST: ${{ secrets.DO_HOST }}
+        run: |
+          sleep 10
+          curl -sf "http://$HOST:4000/api/health" && echo "✅ Webhook server healthy" || echo "⚠️  Health check failed (may still be starting)"
