@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    // MCP host — drives the mifos-system-doctor server from Copilot Chat
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+
+    // TypeScript / Node development
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+
+    // Docker — useful for working with the DO Droplet compose stack
+    "ms-azuretools.vscode-docker",
+
+    // Remote SSH — connect directly to the DigitalOcean Droplet and edit live
+    "ms-vscode-remote.remote-ssh",
+
+    // .env file syntax highlighting
+    "mikestead.dotenv"
+  ]
+}

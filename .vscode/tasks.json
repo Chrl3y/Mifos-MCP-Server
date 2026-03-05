@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build MCP Server",
+      "type": "shell",
+      "command": "npm run build",
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "Start Webhook Server (dev)",
+      "type": "shell",
+      "command": "node --env-file=.env --import tsx/esm src/webhook-server/index.ts",
+      "group": "none",
+      "isBackground": true,
+      "presentation": { "reveal": "always", "panel": "new" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Dashboard (dev)",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/dashboard" },
+      "group": "none",
+      "isBackground": true,
+      "presentation": { "reveal": "always", "panel": "new" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start All (webhook + dashboard)",
+      "dependsOn": ["Start Webhook Server (dev)", "Start Dashboard (dev)"],
+      "group": "none",
+      "presentation": { "reveal": "always" }
+    }
+  ]
+}

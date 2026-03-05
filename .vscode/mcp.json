@@ -1,0 +1,31 @@
+{
+  // VS Code / GitHub Copilot MCP server registration
+  // Docs: https://code.visualstudio.com/docs/copilot/chat/mcp-servers
+  //
+  // Prerequisites:
+  //   1. npm install          (repo root)
+  //   2. cp .env.example .env && fill in your values
+  //   3. VS Code 1.99+ with GitHub Copilot extension
+  //
+  // The server starts on-demand when you open Copilot Chat and select
+  // "mifos-system-doctor" as the active MCP server.
+  // Node 20's --env-file flag loads your .env automatically — no extra setup.
+
+  "servers": {
+    "mifos-system-doctor": {
+      "type": "stdio",
+
+      // Uses tsx (already in devDependencies) so no build step is needed.
+      // Node 20+ --env-file reads your .env file directly.
+      "command": "node",
+      "args": [
+        "--env-file=.env",
+        "--import", "tsx/esm",
+        "src/index.ts"
+      ],
+
+      // Run from the repo root so relative paths (.env, src/config/) resolve
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}
