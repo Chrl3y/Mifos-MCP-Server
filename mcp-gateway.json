@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "mifos-system-doctor": {
+      "command": "docker",
+      "args": [
+        "run", "--rm", "-i",
+        "--env-file", ".env",
+        "mifos-system-doctor:latest"
+      ]
+    },
+    "mifos-self-service": {
+      "command": "docker",
+      "args": [
+        "run", "--rm", "-i",
+        "-e", "MIFOS_BASE_URL",
+        "-e", "MIFOS_TENANT",
+        "mcp-mifosx-self-service:latest"
+      ]
+    },
+    "github": {
+      "url": "http://localhost:3002/mcp"
+    },
+    "slack": {
+      "url": "http://localhost:3003/mcp"
+    },
+    "jira": {
+      "url": "http://localhost:3001/mcp"
+    }
+  }
+}
